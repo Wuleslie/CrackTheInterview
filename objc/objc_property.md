@@ -1,4 +1,4 @@
-#### 理解“属性”--property
+### 理解“属性”--property
 
 **@property = ivar + getter + setter;**
 
@@ -41,9 +41,9 @@
 
 **内存管理语义**: assign/strong/weak/unsafe_unretained/copy。
 
-assign只会执行针对“纯量类型”（scalar type，例如NSInteger、CGFloat等）的简单赋值操作。unsafe_unretained语义和assign相同，但是它适用于对象类型（object type），当它修饰的对象遭到销毁时，属性值不会自动清空（unsafe）。
+assign只会执行针对“标量类型”（scalar type，例如NSInteger、CGFloat等）的简单赋值操作，不更改所赋新值的引用计数，也不改变旧值的引用计数。unsafe_unretained语义和assign相同，但是它适用于对象类型（object type），当它修饰的对象遭到销毁时，属性值不会自动清空（unsafe）。unsafe_unretained只能修饰对象，不能修饰标量类型，而assign两者皆可修饰（但可能会有问题）。
 
-ARC下，不显式指定任何属性特质时
+ARC下，不显式指定任何属性特质时：
 
 - 对应基本数据类型默认是（atomic, readwrite, assign）
 
