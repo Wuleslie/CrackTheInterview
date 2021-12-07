@@ -14,3 +14,5 @@
 
 `id result = objc_msgSend(someObject, @selector(messageName:), parameter);`
 
+#### objc 消息转发
+
