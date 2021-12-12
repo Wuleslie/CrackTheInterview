@@ -14,7 +14,7 @@
 		AF889D3E275F2DA800068349 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF889D3D275F2DA800068349 /* Assets.xcassets */; };
 		AF889D41275F2DA800068349 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AF889D3F275F2DA800068349 /* LaunchScreen.storyboard */; };
 		AF889D44275F2DA800068349 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AF889D43275F2DA800068349 /* main.m */; };
-		AF889D4C275F65FF00068349 /* FRGCDFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = AF889D4B275F65FF00068349 /* FRGCDFactory.m */; };
+		AF889D502765B52100068349 /* FRGCDFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = AF889D4E2765B52100068349 /* FRGCDFactory.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,8 +30,8 @@
 		AF889D40275F2DA800068349 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AF889D42275F2DA800068349 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AF889D43275F2DA800068349 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		AF889D4A275F65FE00068349 /* FRGCDFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRGCDFactory.h; sourceTree = "<group>"; };
-		AF889D4B275F65FF00068349 /* FRGCDFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRGCDFactory.m; sourceTree = "<group>"; };
+		AF889D4E2765B52100068349 /* FRGCDFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRGCDFactory.m; sourceTree = "<group>"; };
+		AF889D4F2765B52100068349 /* FRGCDFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRGCDFactory.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +64,7 @@
 		AF889D30275F2DA300068349 /* FRObjcInterview */ = {
 			isa = PBXGroup;
 			children = (
+				AF889D4D2765B52100068349 /* src */,
 				AF889D31275F2DA300068349 /* AppDelegate.h */,
 				AF889D32275F2DA300068349 /* AppDelegate.m */,
 				AF889D34275F2DA300068349 /* SceneDelegate.h */,
@@ -75,10 +76,17 @@
 				AF889D3F275F2DA800068349 /* LaunchScreen.storyboard */,
 				AF889D42275F2DA800068349 /* Info.plist */,
 				AF889D43275F2DA800068349 /* main.m */,
-				AF889D4A275F65FE00068349 /* FRGCDFactory.h */,
-				AF889D4B275F65FF00068349 /* FRGCDFactory.m */,
 			);
 			path = FRObjcInterview;
+			sourceTree = "<group>";
+		};
+		AF889D4D2765B52100068349 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				AF889D4F2765B52100068349 /* FRGCDFactory.h */,
+				AF889D4E2765B52100068349 /* FRGCDFactory.m */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -154,7 +162,7 @@
 				AF889D39275F2DA300068349 /* ViewController.m in Sources */,
 				AF889D33275F2DA300068349 /* AppDelegate.m in Sources */,
 				AF889D44275F2DA800068349 /* main.m in Sources */,
-				AF889D4C275F65FF00068349 /* FRGCDFactory.m in Sources */,
+				AF889D502765B52100068349 /* FRGCDFactory.m in Sources */,
 				AF889D36275F2DA300068349 /* SceneDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

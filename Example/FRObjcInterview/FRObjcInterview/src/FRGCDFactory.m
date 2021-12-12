@@ -21,7 +21,8 @@ static dispatch_once_t onceToken;
 
 + (void)enterGCDTest {
     //[self syncExecuteConcurrentQueue];
-    [self testDispatchOnce];
+    //[self testDispatchOnce];
+    [self asyncOnGlobalQueue];
 }
 
 + (void)testSerialQueue {
@@ -220,6 +221,54 @@ static dispatch_once_t onceToken;
          由于semaphore的计数值为0，因此到达指定时间为止待机
          */
     }
+}
+
+// MARK: 执行顺序验证
++ (void)asyncOnMainQueue {
+    NSLog(@"begin---%@", [NSDate date]);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            sleep(2);
+            NSLog(@"1---%@", [NSDate date]);
+        });
+        NSLog(@"2---%@", [NSDate date]);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"3---%@", [NSDate date]);
+        });
+    });
+    sleep(1);
+}
+
++ (void)asyncOnGlobalQueue {
+    NSLog(@"begin---%@", [NSDate date]);
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            //sleep(2);
+            NSLog(@"1---%@", [NSDate date]);
+        });
+        NSLog(@"2---%@", [NSDate date]);
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            NSLog(@"3---%@", [NSDate date]);
+        });
+    });
+    sleep(1);
+}
+
++ (void)onOperationQueue {
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    queue.maxConcurrentOperationCount = 1; // 最大并发数为1，等同于串行队列咯
+    NSLog(@"begin---%@", [NSDate date]);
+    [queue addOperationWithBlock:^{
+        [queue addOperationWithBlock:^{
+            sleep(2);
+            NSLog(@"1---%@", [NSDate date]);
+        }];
+        NSLog(@"2---%@", [NSDate date]);
+        [queue addOperationWithBlock:^{
+            NSLog(@"3---%@", [NSDate date]);
+        }];
+    }];
+    sleep(1);
 }
 
 
