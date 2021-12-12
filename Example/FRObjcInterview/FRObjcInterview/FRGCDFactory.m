@@ -7,6 +7,8 @@
 
 #import "FRGCDFactory.h"
 
+static dispatch_once_t onceToken;
+
 @interface FRGCDFactory ()
 
 @property (nonatomic, strong) dispatch_queue_t serialQueue;
@@ -18,7 +20,8 @@
 // MARK: Public
 
 + (void)enterGCDTest {
-    [self syncExecuteConcurrentQueue];
+    //[self syncExecuteConcurrentQueue];
+    [self testDispatchOnce];
 }
 
 + (void)testSerialQueue {
@@ -29,6 +32,26 @@
 }
 
 // MARK: Private
+
++ (void)testDispatchOnce {
+    NSLog(@"%@--%@", [self sharedInstance], @(onceToken));
+    onceToken = 0;
+    NSLog(@"%@--%@", [self sharedInstance], @(onceToken));
+    onceToken = 0;
+    NSLog(@"%@--%@", [self sharedInstance], @(onceToken));
+}
+
++ (id)sharedInstance {
+    static FRGCDFactory *instance = nil;
+    NSLog(@"before dispatch_once onceToken:%ld", onceToken);
+    dispatch_once(&onceToken, ^{
+        instance = [[FRGCDFactory alloc] init];
+        NSLog(@"during dispatch_once onceToken:%ld", onceToken);
+    });
+    NSLog(@"after dispatch_once onceToken:%ld", onceToken);
+    return instance;
+}
+
 // MARK: 串行队列同步执行
 + (void)syncExecuteSerialQueue {
     // 创建同步队列
@@ -103,6 +126,102 @@
     });
     [self executeTaskOnCurrentThread:13];
 }
+
+// MARK：dispatch_set_target_queue
+- (void)setBackgroundTargetQueue {
+    dispatch_queue_t serialQueue = dispatch_queue_create("com.example.bgSerial", NULL);
+    dispatch_queue_t globalBackgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+    // 第一个参数为要修改优先级的队列
+    dispatch_set_target_queue(serialQueue, globalBackgroundQueue);
+}
+
+// MARK: dispatch_after
+- (void)dispatchAfter {
+    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 3ull * NSEC_PER_SEC);
+    dispatch_after(time, dispatch_get_main_queue(), ^{
+        NSLog(@"Waited at least three seconds.");
+    });
+}
+
+// MARK: dispatch_group
+- (void)dispatchGroupNotify {
+    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_group_async(group, queue, ^{
+        NSLog(@"blk0");
+    });
+    dispatch_group_async(group, queue, ^{
+        NSLog(@"blk1");
+    });
+    dispatch_group_async(group, queue, ^{
+        NSLog(@"blk2");
+    });
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        NSLog(@"done");
+    });
+    /**等待指定时间，可以设置为DISPATCH_TIME_FOREVER*/
+    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 3ull * NSEC_PER_SEC);
+    long result = dispatch_group_wait(group, time);
+    if (result == 0) {
+        /**
+         属于Dispatch Group的全部处理任务执行结束
+         */
+    } else {
+        /**
+         属于Dispatch Group的任务还未全部执行完成
+         */
+    }
+}
+
+- (void)dispatchGroupWait {
+    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_group_async(group, queue, ^{
+        NSLog(@"blk0");
+    });
+    dispatch_group_async(group, queue, ^{
+        NSLog(@"blk1");
+    });
+    dispatch_group_async(group, queue, ^{
+        NSLog(@"blk2");
+    });
+    /**等待指定时间，可以设置为DISPATCH_TIME_FOREVER*/
+    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 3ull * NSEC_PER_SEC);
+    long result = dispatch_group_wait(group, time);
+    if (result == 0) {
+        /**
+         属于Dispatch Group的全部处理任务执行结束
+         */
+    } else {
+        /**
+         属于Dispatch Group的任务还未全部执行完成
+         */
+    }
+}
+
+// MARK: dispatch semaphore
+- (void)dispatchSemaphore {
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        /**
+         耗时操作，比如网络请求
+         */
+        dispatch_semaphore_signal(semaphore);
+    });
+    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 10ull * NSEC_PER_SEC);
+    long result = dispatch_semaphore_wait(semaphore, time);
+    if (result == 0) {
+        /**
+         由于semaphore的计数值大于等于1
+         可执行需要进行排他控制的处理
+         */
+    } else {
+        /**
+         由于semaphore的计数值为0，因此到达指定时间为止待机
+         */
+    }
+}
+
 
 // MARK: Getters
 
