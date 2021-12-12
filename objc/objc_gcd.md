@@ -279,3 +279,10 @@ sleep(1);
 *如果全换成global dispatch queue呢？*
 
 如果换成global dispatch queue，则最底下sleep(1)不会造成等待，并发，先打印2，然后打印3，两秒后，打印出1：开始---打印2---打印3—等待2秒----打印1.(如果1处没有sleep，则1和2的打印顺序随机)
+
+五、说一下dispatch_group_t和dispatch_barrier_sync的区别
+
+dispatch_group_t常用于执行完一组任务之后再做后续操作；dispatch_barrier_(a)sync则“承上启下”，保证在其之前的任务都先于自己执行，此后的任务都迟于自己执行，跟并发队列结合可实现高效率的数据库访问和文件访问。注意，dispatch_barrier_sync跟dispatch_barrier_async只在自己创建的并发队列上有效，在global dispatch queue和serial dispatch queue上无效。
+
+六、用gcd实现比较高效的属性访问，要线程安全。
+

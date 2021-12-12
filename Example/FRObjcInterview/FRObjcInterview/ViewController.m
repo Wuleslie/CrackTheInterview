@@ -7,6 +7,7 @@
 
 #import "ViewController.h"
 #import "FRGCDFactory.h"
+#import "FRMultiThread.h"
 
 @interface ViewController ()
 
@@ -18,6 +19,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [FRGCDFactory enterGCDTest];
+    [FRMultiThread enterMultiThreadTest];
 }
 
 

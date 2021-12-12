@@ -22,7 +22,7 @@ static dispatch_once_t onceToken;
 + (void)enterGCDTest {
     //[self syncExecuteConcurrentQueue];
     //[self testDispatchOnce];
-    [self asyncOnGlobalQueue];
+    [self doTaskByOrder];
 }
 
 + (void)testSerialQueue {
@@ -271,6 +271,32 @@ static dispatch_once_t onceToken;
     sleep(1);
 }
 
+// 有A、B、C、D四个异步任务，AB执行结束才能执行C，A执行完成才能执行D
+// 这种任务间的依赖关系，NSOperation更容易表达
++ (void)doTaskByOrder {
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_queue_t concurrentQueue = dispatch_queue_create("concurrentQueue", DISPATCH_QUEUE_CONCURRENT);
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    dispatch_group_async(group, concurrentQueue, ^{
+        sleep(2);
+        NSLog(@"taskA");
+        dispatch_semaphore_signal(semaphore);
+    });
+
+    dispatch_group_async(group, concurrentQueue, ^{
+        NSLog(@"taskB");
+    });
+    
+    dispatch_group_notify(group, concurrentQueue, ^{
+        NSLog(@"taskC");
+    });
+    
+    dispatch_async(concurrentQueue, ^{
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        //sleep(2);
+        NSLog(@"taskD");
+    });
+}
 
 // MARK: Getters
 
