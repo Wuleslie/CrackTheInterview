@@ -252,3 +252,30 @@ DISPATCH_NOESCAPE多用来修饰block，用于表明block在当前方法执行�
 通过dispatch_once_t的值来控制的，onceToken的初始值为0，在执行完dispatch_once的block后，onceToken的值变为-1。**当我们将onceToken的值重置为0后，调用dispatch_once函数会再次执行block。**
 
 另外，如果将onceToken的初始值设为-1，dispatch_once将一次都不执行，返回空。而如果初始值既不是0也不是-1，随便赋一个什么数值，程序将会崩溃在dispatch_once(predicate, block)处，提示EXC_BAD_INSTRUCTION 
+
+三、iOS多线程有哪些实现方式？
+
+pthread, NSThread, NSOperation/NSOperationQueue, GCD. 
+
+四、请说出以下代码的执行顺序以及每次执行前等待了多长时间？并解释下原因。
+
+```objective-c
+dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        sleep(2);
+        NSLog(@"1");
+    });
+    NSLog(@"2");
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@"3");
+    });
+});
+sleep(1);
+```
+
+首先，针对主队列的情况，因为是异步执行，所以最底下sleep(1)会让当前线程先睡眠1秒，如果当前线程为主线程，则会等待1秒，然后开始执行追加到主队列的block。block一开始就是追加异步任务1到主队列，将会在当前block执行后再执行，接着是执行任务2，然后是追加异步任务3到主队列。因为主队列是串行队列，所以任务将会顺序执行：
+开始---如果当前线程为主线程，等待1秒---打印2---等待2秒---打印1---打印3
+
+*如果全换成global dispatch queue呢？*
+
+如果换成global dispatch queue，则最底下sleep(1)不会造成等待，并发，先打印2，然后打印3，两秒后，打印出1：开始---打印2---打印3—等待2秒----打印1.(如果1处没有sleep，则1和2的打印顺序随机)
