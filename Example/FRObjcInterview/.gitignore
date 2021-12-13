@@ -1,0 +1,8 @@
+# Xcode
+.DS_Store
+# *.xcworkspace
+xcuserdata
+DerivedData
+*.xcuserstate
+# Pods
+Pods
