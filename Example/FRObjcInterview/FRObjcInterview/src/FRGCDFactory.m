@@ -22,7 +22,7 @@ static dispatch_once_t onceToken;
 + (void)enterGCDTest {
     //[self syncExecuteConcurrentQueue];
     //[self testDispatchOnce];
-    [self doTaskByOrder];
+    [self useGCDTimer];
 }
 
 + (void)testSerialQueue {
@@ -296,6 +296,39 @@ static dispatch_once_t onceToken;
         //sleep(2);
         NSLog(@"taskD");
     });
+}
+
+// MARK: gcd timer
+
++ (void)useGCDTimer {
+    NSLog(@"Create gcd timer");
+    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+    /**
+     将定时器设定为5秒触发
+     不重复
+     允许延迟一秒
+     */
+    dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, 5ull * NSEC_PER_SEC), DISPATCH_TIME_FOREVER, 1);
+    /**
+     指定定时器指定时间内执行的处理
+     */
+    dispatch_source_set_event_handler(timer, ^{
+        NSLog(@"wake up!");
+        /**
+         取消Dispatch source
+         */
+        dispatch_source_cancel(timer);
+    });
+    /**
+     指定取消Dispatch Source时的处理
+     */
+    dispatch_source_set_cancel_handler(timer, ^{
+        NSLog(@"canneled");
+    });
+    /**
+     启动Dispatch Source
+     */
+    dispatch_resume(timer);
 }
 
 // MARK: Getters

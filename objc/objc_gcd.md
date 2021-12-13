@@ -183,6 +183,15 @@ dispatch_apply([array count], queue, ^(size_t index) {
 });
 ```
 
+#### dispatch_suspend/dispatch_resume
+
+dispatch_suspend函数挂起指定的Dispatch Queue，dispatch_resume则恢复指定的Dispatch Queue。
+
+```objective-c
+dispath_suspend(queue);
+dispatch_resume(queue);
+```
+
 #### dispatch_semaphore
 
 用于更细粒度的排他控制。
@@ -231,6 +240,67 @@ void dispatch_once(dispatch_once_t *predicate, DISPATCH_NOESCAPE dispatch_block_
 DISPATCH_NOESCAPE多用来修饰block，用于表明block在当前方法执行结束前执行。类似于Swift中的@noescape（非逃逸闭包），与之对应的是@escaping（逃逸闭包）。简单地说，闭包在函数结束前被调用的为非逃逸闭包，闭包在函数结束后被调用的为逃逸闭包。
 
 注意，dispatch_once可能导致的死锁问题，比如两个单例对象在init方法中相互调用。
+
+#### Dispatch Source
+
+Dispatch Source是BSD系内核惯有功能kqueue的包装。kqueue是在XNU内核中发生各种事件时，在应用程序编程方执行处理的技术。其CPU负荷非常小，尽量不占用资源。kqueue可以说是应用程序处理XNU内核中发生的各种事件的方法中最优秀的一种。
+
+Dispatch Source的种类：
+
+| 名称                           | 内容                   |
+| ------------------------------ | ---------------------- |
+| DISPATCH_SOURCE_TYPE_DATA_ADD  | 变量增加               |
+| DISPATCH_SOURCE_TYPE_DATA_OR   | 变量OR                 |
+| DISPATCH_SOURCE_TYPE_MACH_SEND | MACH端口发送           |
+| DISPATCH_SOURCE_TYPE_MACH_RECV | MACH端口接收           |
+| DISPATCH_SOURCE_TYPE_PROC      | 检测到与进程相关的事件 |
+| DISPATCH_SOURCE_TYPE_READ      | 可读取文件映像         |
+| DISPATCH_SOURCE_TYPE_SIGNAL    | 接收信号               |
+| DISPATCH_SOURCE_TYPE_TIMER     | 定时器                 |
+| DISPATCH_SOURCE_TYPE_VNODE     | 文件系统有变更         |
+| DISPATCH_SOURCE_TYPE_WRITE     | 可写入文件映像         |
+
+使用gcd timer的示例：
+
+```objective-c
+/**
+ 在定时器经过指定时间时设定Main Queue为追加处理的Dispatch Queue
+ */
+dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+/**
+ 将定时器设定为5秒触发
+ 不重复
+ 允许延迟一秒
+ */
+dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, 5ull * NSEC_PER_SEC), DISPATCH_TIME_FOREVER, 1);
+/**
+ 指定定时器指定时间内执行的处理
+ */
+dispatch_source_set_event_handler(timer, ^{
+    NSLog(@"wake up!");
+    /**
+     取消Dispatch source
+     */
+    dispatch_source_cancel(timer);
+});
+/**
+ 指定取消Dispatch Source时的处理
+ */
+dispatch_source_set_cancel_handler(timer, ^{
+    NSLog(@"canneled");
+});
+/**
+ 启动Dispatch Source
+ */
+dispatch_resume(timer);
+```
+
+**需要注意的是，dispatch_suspend之后的timer是不能直接释放的，否则会导致崩溃。**dispatch_source_cancel则没有这个限制。
+
+```objective-c
+dispatch_suspend(_timer);
+_timer = nil; // EXC_BAD_INSTRUCTION崩溃
+```
 
 #### 练习题
 
@@ -285,4 +355,8 @@ sleep(1);
 dispatch_group_t常用于执行完一组任务之后再做后续操作；dispatch_barrier_(a)sync则“承上启下”，保证在其之前的任务都先于自己执行，此后的任务都迟于自己执行，跟并发队列结合可实现高效率的数据库访问和文件访问。注意，dispatch_barrier_sync跟dispatch_barrier_async只在自己创建的并发队列上有效，在global dispatch queue和serial dispatch queue上无效。
 
 六、用gcd实现比较高效的属性访问，要线程安全。
+
+七、说说NSOperationQueue的maxConcurrentOperationCount。
+
+maxConcurrentOperationCount默认值是-1；如果值设为0，那么不会执行任何任务；如果值设为1，那么该队列是串行的；如果大于1，那么是并行的。
 
