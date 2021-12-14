@@ -46,8 +46,9 @@ assign只会执行针对“标量类型”（scalar type，例如NSInteger、CGF
 ARC下，不显式指定任何属性特质时：
 
 - 对应基本数据类型默认是（atomic, readwrite, assign）
-
 - 对于普通的OC对象默认是（atomic, readwrite, strong）
+
+#### 练习
 
 Q1: 如果OC对象使用assign修饰会怎样？
 
@@ -56,3 +57,27 @@ Q1: 如果OC对象使用assign修饰会怎样？
 Q2：@property(nonatomatic, copy) NSMutableArray *array; 有什么问题 ？
 
 用copy修饰，NSMutableArray浅拷贝，将会变成NSArray，对其进行可变操作将会崩溃。
+
+Q3: 详细说明下浅拷贝、深拷贝。
+
+浅拷贝就是拷贝后，并没有进行真正的复制，而是复制的对象和原对象都指向同一个地址。
+深拷贝是真正的复制了一份，复制的对象指向了新的地址，两个对象互补影响。
+
+**深拷贝和浅拷贝的本质区别是拷贝后内存地址是否相同！**
+
+| 对象类型            | copy               | mutableCopy               |
+| ------------------- | ------------------ | ------------------------- |
+| NSString            | NSString浅拷贝     | NSMutableString深拷贝     |
+| NSMutableString     | NSString深拷贝     | NSMutableString深拷贝     |
+| NSArray             | NSArray浅拷贝      | NSMutableArray深拷贝      |
+| NSMutableArray      | NSArray深拷贝      | NSMutableArray深拷贝      |
+| NSDictionary        | NSDictionary浅拷贝 | NSMutableDictionary深拷贝 |
+| NSMutableDictionary | NSDictionary浅拷贝 | NSMutableDictionary深拷贝 |
+
+注意数组的深拷贝，并不算真正的深拷贝，而只能算是单层深拷贝，即当数组中的元素是可变字符串时，拷贝后的数组元素跟原数组里的元素是同一个。（考虑initWithArray:copyItems:, 归档解档）
+
+ 
+
+ 
+
+ 
