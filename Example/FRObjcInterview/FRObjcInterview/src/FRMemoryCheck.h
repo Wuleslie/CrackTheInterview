@@ -11,6 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FRMemoryCheck : NSObject
 
++ (void)enterMemoryTest;
+
 @end
 
 NS_ASSUME_NONNULL_END

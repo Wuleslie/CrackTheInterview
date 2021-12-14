@@ -17,6 +17,7 @@
 		AF889D502765B52100068349 /* FRGCDFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = AF889D4E2765B52100068349 /* FRGCDFactory.m */; };
 		AF889D532765F11000068349 /* FRMemoryCheck.m in Sources */ = {isa = PBXBuildFile; fileRef = AF889D522765F11000068349 /* FRMemoryCheck.m */; };
 		AF889D562765F19F00068349 /* FRMultiThread.m in Sources */ = {isa = PBXBuildFile; fileRef = AF889D552765F19F00068349 /* FRMultiThread.m */; };
+		AF889D5927687E0F00068349 /* FRPerson.m in Sources */ = {isa = PBXBuildFile; fileRef = AF889D5827687E0E00068349 /* FRPerson.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,8 @@
 		AF889D522765F11000068349 /* FRMemoryCheck.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMemoryCheck.m; sourceTree = "<group>"; };
 		AF889D542765F19F00068349 /* FRMultiThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRMultiThread.h; sourceTree = "<group>"; };
 		AF889D552765F19F00068349 /* FRMultiThread.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRMultiThread.m; sourceTree = "<group>"; };
+		AF889D5727687E0E00068349 /* FRPerson.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRPerson.h; sourceTree = "<group>"; };
+		AF889D5827687E0E00068349 /* FRPerson.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRPerson.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +98,8 @@
 				AF889D522765F11000068349 /* FRMemoryCheck.m */,
 				AF889D542765F19F00068349 /* FRMultiThread.h */,
 				AF889D552765F19F00068349 /* FRMultiThread.m */,
+				AF889D5727687E0E00068349 /* FRPerson.h */,
+				AF889D5827687E0E00068349 /* FRPerson.m */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -173,6 +178,7 @@
 				AF889D562765F19F00068349 /* FRMultiThread.m in Sources */,
 				AF889D33275F2DA300068349 /* AppDelegate.m in Sources */,
 				AF889D44275F2DA800068349 /* main.m in Sources */,
+				AF889D5927687E0F00068349 /* FRPerson.m in Sources */,
 				AF889D502765B52100068349 /* FRGCDFactory.m in Sources */,
 				AF889D36275F2DA300068349 /* SceneDelegate.m in Sources */,
 				AF889D532765F11000068349 /* FRMemoryCheck.m in Sources */,
