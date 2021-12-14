@@ -50,15 +50,15 @@ ARC下，不显式指定任何属性特质时：
 
 #### 练习
 
-Q1: 如果OC对象使用assign修饰会怎样？
+*Q1: 如果OC对象使用assign修饰会怎样？*
 
 首先，用assign修饰OC对象，编译不会报错，但会有警告*Assigning retained object to unsafe property; object will be released after assignment.* assign是指针赋值，被assign修饰的对象, 在释放之后，指针的地址还是存在的，也就是说指针并没有被置为nil，造成野指针。而基本数据类型一般分配在栈上，栈的内存会由系统自己自动处理，不会造成野指针。
 
-Q2：@property(nonatomatic, copy) NSMutableArray *array; 有什么问题 ？
+*Q2：@property(nonatomatic, copy) NSMutableArray *array; 有什么问题 ？*
 
 用copy修饰，NSMutableArray浅拷贝，将会变成NSArray，对其进行可变操作将会崩溃。
 
-Q3: 详细说明下浅拷贝、深拷贝。
+*Q3: 详细说明下浅拷贝、深拷贝。*
 
 浅拷贝就是拷贝后，并没有进行真正的复制，而是复制的对象和原对象都指向同一个地址。
 深拷贝是真正的复制了一份，复制的对象指向了新的地址，两个对象互补影响。
@@ -76,7 +76,9 @@ Q3: 详细说明下浅拷贝、深拷贝。
 
 注意数组的深拷贝，并不算真正的深拷贝，而只能算是单层深拷贝，即当数组中的元素是可变字符串时，拷贝后的数组元素跟原数组里的元素是同一个。（考虑initWithArray:copyItems:, 归档解档）
 
- 
+*Q4: 为什么NSString要用copy修饰？如果用strong呢？*
+
+ 如果赋值的是纯NSString类示例（isMemberOfClass），因为是只读的，所以用copy和strong的效果一样。但NSString类型的属性可以接受子类---比如说NSMutableString类型的赋值，这时候如果用copy修饰，那么属性在被赋值时，会对可变字符串进行深拷贝，并且拷贝后的字符串为不可变类型，后续对可变字符串的操作不会影响属性的值。而如果用strong修饰，则赋值后属性只是指向了可变字符串，其引用计数+1。
 
  
 
