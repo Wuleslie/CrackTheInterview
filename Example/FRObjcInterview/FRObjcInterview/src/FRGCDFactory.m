@@ -22,7 +22,7 @@ static dispatch_once_t onceToken;
 + (void)enterGCDTest {
     //[self syncExecuteConcurrentQueue];
     //[self testDispatchOnce];
-    [self useGCDTimer];
+    [self testSyncOnQueue];
 }
 
 + (void)testSerialQueue {
@@ -295,6 +295,19 @@ static dispatch_once_t onceToken;
         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         //sleep(2);
         NSLog(@"taskD");
+    });
+}
+
+// 串行队列中同步执行，deadlock！
++ (void)testSyncOnQueue {
+    dispatch_queue_t queue = dispatch_queue_create("com.serial.queue",
+    DISPATCH_QUEUE_SERIAL);
+    dispatch_async(queue, ^{
+        NSLog(@"1");
+        dispatch_sync(queue, ^{
+            NSLog(@"2");
+        });
+        NSLog(@"3");
     });
 }
 
