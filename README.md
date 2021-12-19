@@ -1,2 +1,2 @@
 # CrackTheInterview
-### This is a collection of interview stuffs, specially for SDE.
+### This is a collection of interview stuffs, specially for iOS.
