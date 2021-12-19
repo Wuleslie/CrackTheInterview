@@ -1,4 +1,6 @@
-### 理解“属性”--property
+### 理解“属性”
+
+#### 何为property
 
 **@property = ivar + getter + setter;**
 
@@ -48,7 +50,7 @@ ARC下，不显式指定任何属性特质时：
 - 对应基本数据类型默认是（atomic, readwrite, assign）
 - 对于普通的OC对象默认是（atomic, readwrite, strong）
 
-#### 练习
+#### 问题
 
 *Q1: 如果OC对象使用assign修饰会怎样？*
 
